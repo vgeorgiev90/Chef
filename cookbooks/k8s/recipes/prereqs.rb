@@ -29,10 +29,17 @@ key = data_bag_item('k8s', 'info')['pubkey']
 
 bash 'ssh_key' do
   code <<-EOH
-    mkdir /root/.ssh
+    mkdir /root/.ssh 2>/dev/null
     echo "#{key}" >> /root/.ssh/authorized_keys
     chmod 700 /root/.ssh
     chmod 400 /root/.ssh/authorized_keys
     EOH
-  not_if { ::File.exists?("/root/.ssh/authorized_keys") }
 end 
+
+cookbook_file '/root/.ssh/k8s' do
+  source 'defalt/id_rsa'
+  owner 'root'
+  group 'root'
+  mode '0600'
+end
+
