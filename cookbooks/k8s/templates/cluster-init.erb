@@ -2,7 +2,7 @@ apiVersion: kubeadm.k8s.io/v1alpha3
 kind: ClusterConfiguration
 kubernetesVersion: stable
 apiServerCertSANs:
-<% @api_sans.each do |part| %>
+<% @apisans.each do |part| %>
   - <%= part %>
 <% end %>
 controlPlaneEndpoint: "<%= @endpoint %>"
@@ -11,5 +11,5 @@ apiServerExtraArgs:
   enable-admission-plugins: NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeClaimResize,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority
   feature-gates: ExpandInUsePersistentVolumes=true,ExpandPersistentVolumes=true
 networking:
-  podSubnet: "<%= @pod_subnet %>"
+  podSubnet: "<%= @podsubnet %>"
 

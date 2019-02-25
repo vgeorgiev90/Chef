@@ -2,8 +2,8 @@ template '/root/cluster-init.yml' do
   source "cluster-init.erb"
   variables(
     endpoint: data_bag_item('k8s', 'info')['endpoint'],   
-    pod_subnet: data_bag_item('k8s', 'info')['podsubnet'], 
-    api_sans: data_bag_item('k8s', 'info')['apisans']     
+    podsubnet: data_bag_item('k8s', 'info')['podsubnet'], 
+    apisans: data_bag_item('k8s', 'info')['apisans']     
   )
 end
 

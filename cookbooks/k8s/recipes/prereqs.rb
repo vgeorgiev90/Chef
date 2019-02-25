@@ -1,3 +1,4 @@
+
 bash 'disable_swap' do
   code <<-EOH
     swapoff -a
@@ -25,16 +26,22 @@ service 'docker' do
   action [:enable, :start]
 end
 
-key = data_bag_item('k8s', 'info')['pubkey']
-
 bash 'ssh_key' do
   code <<-EOH
-    mkdir /root/.ssh 2>/dev/null
-    echo "#{key}" >> /root/.ssh/authorized_keys
-    chmod 700 /root/.ssh
-    chmod 400 /root/.ssh/authorized_keys
+    if [ ! -d "/root/.ssh" ]; then mkdir /root/.ssh; fi
     EOH
 end 
+
+template '/root/.ssh/authorized_keys' do
+  source "authorized_keys.erb"
+  variables(
+    keys: data_bag_item('k8s', 'info')['keys'],
+  )
+  owner 'root'
+  group 'root'
+  mode '0600'
+end
+
 
 cookbook_file '/root/.ssh/k8s' do
   source 'default/id_rsa'
@@ -42,4 +49,3 @@ cookbook_file '/root/.ssh/k8s' do
   group 'root'
   mode '0600'
 end
-
