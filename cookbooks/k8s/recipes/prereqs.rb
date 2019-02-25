@@ -37,7 +37,7 @@ bash 'ssh_key' do
 end 
 
 cookbook_file '/root/.ssh/k8s' do
-  source 'defalt/id_rsa'
+  source 'default/id_rsa'
   owner 'root'
   group 'root'
   mode '0600'
