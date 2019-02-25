@@ -1,0 +1,209 @@
+################## Overview ##################
+Chef is a powerful automation platform that transforms infrastructure into code. 
+Whether you’re operating in the cloud, on-premises, or in a hybrid environment, 
+Chef automates how infrastructure is configured, deployed, and managed across your network, no matter its size.
+
+master/client architecture
+Chef components and features:
+It provides Domain specific language(DLS) it utilizes a declarative approach
+and it is divided to:
+Chef DK(Development Kit)
+ Food-critic - helps with best practices to writing cookbooks
+ kitchen - automated tests for the cookbooks 
+Chef Server -- Hold on all information about nodes, configuratios, recipes
+Chef Client -- Resides on every node and applies the configuration
+
+
+Chef Supermarket is the site for community cookbooks. 
+It provides an easily searchable cookbook repository and a friendly web UI. 
+Cookbooks that are part of the Chef Supermarket are accessible by any Chef user.
+
+################## Installation #####################
+
+#Download link https://downloads.chef.io/chef-server
+
+Download either .rpm or .deb and install
+
+##Reconfigure chef server
+chef-server-ctl reconfigure
+
+## Check chef server services that are running
+chef-server-ctl service-list
+
+## Create first chef user
+chef-server-ctl user-create username NAME LST_NAME MAIL PASSWORD --filename /path/to/key.pem
+
+## Create organization
+chef-server-ctl org-create orgname 'FUL ORG NAME' --association_user username --filename /path/to/other/key.pem
+
+## Install chef-manage
+chef-server-ctl install chef-manage
+
+## After install do reconfigure one more time
+
+##Reconfigure chef-manage
+chef-manage-ctl reconfigure
+
+##Dashboard can be access on https://chef-server-ip
+
+
+################ Chef DK workstation install ##################
+
+## Get the package from https://downloads.chef.io/chefdk/3.7.23#ubuntu
+
+
+## Init chef variables, path and ruby (every time) 
+eval "$(chef shell-init bash)"
+
+## Chef code repo initialize
+chef generate repo NAME
+
+##Knife - utility that used to interact with chef server and infrastructure
+knife configure
+
+
+##Fetch the self signed certificate
+knife ssl fetch
+
+##To test the connection to the chef server
+knife node list
+
+
+############### Chef agent bootstrap ###################
+A chef-client is an agent that runs locally on every node that is under management by Chef. 
+When a chef-client is run, it will perform all of the steps that are required to bring the node into the expected state
+
+##Bootstrap chef node
+knife bootstrap chef-node -N test-node-1 -x viktor -P 'Viktor!@#' --sudo
+
+
+## Chef-client workflow
+Get configuration data - Read information from client.rb file and Ohai attributes.
+Authenticate w/ Chef server - Utilizes RSA key & node name to authenticate with Chef server. Will generate a new RSA key if this is the first connection.
+Get/rebuild the node object - Pull node object from Chef server if this isn’t the first chef-client run. After the pull, the node object is rebuilt based on the node’s current state.
+Expand the run-list - Compiles the list of roles and recipes to be applied.
+Synchronize cookbooks - Request and download all of the files from cookbooks on the Chef server that are necessary to converge the run list and are different from the files already existing on the node.
+Reset node attributes - Rebuild the attributes on the node object.
+Compile the resource collection - Load the necessary Ruby code to converge the run-list.
+Converge the node - Execute the run-list.
+Update the node object, process exception & report handlers - Update the node object on the Chef server after the chef-client run finishes successfully. Also executing the exception and report handlers in the proper order.
+Stop, wait for the next run - The chef-client waits until the next time it is executed.
+
+
+#################### Cookbooks ######################
+chef generate cookbook path/to/cookbooks/in/repo
+chef generate recipe /path/to/cookbook NAME
+chef generate file /path/to/cookbook NAME
+chef generate attribute /path/to/cookbook NAME
+
+
+##Attributes ref
+https://docs.chef.io/attributes.html
+
+## Recipes examples
+repo/cookbooks/test_nginx/recipes/default.rb
+
+package "nginx"
+
+service "nginx" do
+  action [:enable, :start]
+end
+
+file "/usr/share/nginx/html/index.html" do
+  content "Chef test nginx"
+  owner "root"
+  group "root"
+  mode "0644"
+  action :create
+  not_if { ::File.exists?("/usr/share/nginx/html/index.html") }
+end
+
+
+## Run the recipe locally
+chef-client --local-mode cookbooks/test_nginx/recipes/default.rb
+
+
+##Reference on resource type actions 
+https://docs.chef.io/resource_package.html#actions
+
+type "name" do
+  attribute "value"
+  action :type_of_action
+end
+
+
+### Run lists
+## Upload the cookbooks to the chef server
+knife upload cookbooks/test_nginx --chef-repo-path=/root/first-repo
+
+## Run the recipe/cookbook on the node
+## check the current runlist for the node
+knife node show node1
+
+## add recipe to the run list
+knife node run_list add NODE1 'recipe[test_nginx::default]'
+
+##Run the recipe on the node
+knife ssh 'name:test-node-1' 'sudo chef-client' -x viktor 
+
+### Role definitions
+knife role create base
+knife role run_list add base 'motd_test'
+
+knife node run_list add test-node-1 'role[base]' --before 'recipe[test_nginx]' #optional
+
+### Environments
+knife environment create NAME 
+knife node environment set test-node-1 stage
+
+
+### Data bags
+Data bags are pieces of JSON data that are stored in the Chef Server. 
+They're searchable and also available within recipes. 
+
+knife data bag create NAME 
+knife data bag create NAME something
+
+#From file
+knife data bag from file users data_bags/users/user.json
+
+##Usage
+admins = data_bag('admins')
+
+admins.each do |login|
+  admin = data_bag_item('admins', login)
+  home = "/home/#{login}"
+
+  user(login) do
+    uid       admin['uid']
+    gid       admin['gid']
+    shell     admin['shell']
+    comment   admin['comment']
+    home      home
+    manage_home true
+  end
+
+end
+
+
+### Subscribes and notifies
+service "nginx" do
+  action [:enable, :start]
+  subscribes :reload, 'file[/etc/nginx/example.conf]'
+end
+
+file "/etc/nginx/example.conf" do
+  content "example content updated"
+  notifies :reload, 'service[nginx]'
+end
+
+### Conditional Statements
+package 'apache' do
+  if node['platform_family'] == 'debian'
+    package_name 'apache2'
+  else
+    package_name 'httpd'
+  end
+
+  action :install
+end
