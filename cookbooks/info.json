@@ -1,0 +1,6 @@
+{
+  "token": "rsXGvP.qBetcGXRGLZzddhd",
+  "endpoint": "10.0.11.150:6443",
+  "podsubnet": "10.244.0.0/16",
+  "apisans": ["10.0.11.150", "10.0.11.151", "master1", "master2"]
+}
