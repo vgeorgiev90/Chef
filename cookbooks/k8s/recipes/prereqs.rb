@@ -25,3 +25,14 @@ service 'docker' do
   action [:enable, :start]
 end
 
+key = data_bag_item('k8s', 'info')['pubkey']
+
+bash 'ssh_key' do
+  code <<-EOH
+    mkdir /root/.ssh
+    echo "#{key}" >> /root/.ssh/authorized_keys
+    chmod 700 /root/.ssh
+    chmod 400 /root/.ssh/authorized_keys
+    EOH
+  not_if { ::File.exists?("/root/.ssh/authorized_keys") }
+end 

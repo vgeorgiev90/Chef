@@ -3,13 +3,13 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 apiServerCertSANs:
 <% @api_sans.each do |part| %>
-  - <% part %>
+  - <%= part %>
 <% end %>
-controlPlaneEndpoint: "<% @endpoint %>"
+controlPlaneEndpoint: "<%= @endpoint %>"
 apiServerExtraArgs:
   service-node-port-range: 80-32000
   enable-admission-plugins: NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeClaimResize,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority
   feature-gates: ExpandInUsePersistentVolumes=true,ExpandPersistentVolumes=true
 networking:
-  podSubnet: "<% @pod_subnet %>"
+  podSubnet: "<%= @pod_subnet %>"
 

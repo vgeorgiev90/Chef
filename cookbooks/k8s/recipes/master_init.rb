@@ -1,9 +1,9 @@
 template '/root/cluster-init.yml' do
-  source "default/cluster-init.erb"
+  source "cluster-init.erb"
   variables(
-    endpoint: data_bag_item('k8s', 'info')['endpoint']   
-    pod_subnet: data_bag_item('k8s', 'info')['pod_subnet'] 
-    api_sans: data_bag_item('k8s', 'info')['api_sans']     
+    endpoint: data_bag_item('k8s', 'info')['endpoint'],   
+    pod_subnet: data_bag_item('k8s', 'info')['podsubnet'], 
+    api_sans: data_bag_item('k8s', 'info')['apisans']     
   )
 end
 
@@ -16,13 +16,13 @@ bash 'master_init' do
   not_if { ::File.exists?("/etc/kubernetes/manifests/kube-apiserver.yaml") }
 end
 
-bash 'print-join-command' do
+bash 'print_join_command' do
   code <<-EOH
     kubeadm token create --print-join-command
     EOH
 end
 
-bash 'admin-config' do
+bash 'admin_config' do
   code <<-EOH
     mkdir ~/root/.kube
     cp /etc/kubernetes/admin.conf /root/.kube/config
