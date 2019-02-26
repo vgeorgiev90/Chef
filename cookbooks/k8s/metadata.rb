@@ -1,10 +1,10 @@
 name 'k8s'
-maintainer 'The Authors'
-maintainer_email 'you@example.com'
-license 'All Rights Reserved'
-description 'Installs/Configures k8s'
-long_description 'Installs/Configures k8s'
-version '0.1.0'
+maintainer 'Viktor Georgiev'
+maintainer_email 'v.georgiev90@abv.bg'
+license 'Long live open source'
+description 'Installs/Configures kubernetes HA cluster'
+long_description 'Installs/Configures kubernetes HA cluster'
+version '1.0.0'
 chef_version '>= 13.0'
 
 # The `issues_url` points to the location where issues for this cookbook are
