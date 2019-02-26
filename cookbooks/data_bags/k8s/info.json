@@ -1,5 +1,5 @@
 {
-  "token": "rsXGvP.qBetcGXRGLZzddhd",
+  "token": "98pw9m.553bdr9avbwuqtu7",
   "endpoint": "10.0.11.150:6443",
   "podsubnet": "10.244.0.0/16",
   "apisans": ["10.0.11.150", "10.0.11.151", "master1", "master2"],
