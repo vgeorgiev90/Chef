@@ -13,7 +13,7 @@ bash 'get_certs' do
 end
 
 bash 'join' do
-  environment ({'TOKEN' => data_bag_item('k8s', 'info')['token']}, {'ENDPOINT' => data_bag_item('k8s', 'info')['endpoint']})
+  environment ({'TOKEN' => data_bag_item('k8s', 'info')['token'], 'ENDPOINT' => data_bag_item('k8s', 'info')['endpoint']})
   code <<-EOH
     kubeadm join $ENDPOINT --token $TOKEN --discovery-token-unsafe-skip-ca-verification --ignore-preflight-errors=all --experimental-control-plane
     EOH
