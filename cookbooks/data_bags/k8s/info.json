@@ -3,6 +3,7 @@
   "endpoint": "10.0.11.150:6443",
   "podsubnet": "10.244.0.0/16",
   "apisans": ["10.0.11.150", "10.0.11.151", "master1", "master2"],
+  "primarymaster": "10.0.11.150",
   "keys": [ 
      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBirCeD8B98qerU9Yv05Yzf03s3Kq4OUveZPg6VrNexPoatt4ioBbcSsXqsD26DJZo0jLSu222ef6ZuticE5O1ylA6MCOm9TRduMg5Sa6PvILOve+Q88mn1R8cHW/VDXb48oy9oKcgg6Oawl016VY2MaV0aHcfK0NsogkCcxOhKnSdjct7i+rMJvfBuba/n+YEBNm+3IdgKoG9a0nnDz4OnBhVpm4LXI1FJHRAVuJ5ffFGmOpaxvewsQHpF3hTEeilhbbYc67CuZEkr33LMxCWgY5GTzFb4uZcQyjhhxX/jNE6MGdEKYoge2sDf2aYaiGN1WNp3jemQm+I5k+1ut1v root@viktorgeorgiev1c.mylabserver.com"
   ]
