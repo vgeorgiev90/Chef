@@ -17,7 +17,7 @@ end
 
 bash 'admin_config' do
   code <<-EOH
-    mkdir ~/root/.kube
+    mkdir /root/.kube
     cp /etc/kubernetes/admin.conf /root/.kube/config
     EOH
   not_if { ::File.exists?("/root/.kube/config") }
