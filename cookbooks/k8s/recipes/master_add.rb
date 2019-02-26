@@ -17,4 +17,5 @@ bash 'join' do
   code <<-EOH
     kubeadm join $ENDPOINT --token $TOKEN --discovery-token-unsafe-skip-ca-verification --ignore-preflight-errors=all --experimental-control-plane
     EOH
+  not_if { ::File.exists?("/etc/kubernetes/manifests/kube-apiserver.yaml") }
 end
