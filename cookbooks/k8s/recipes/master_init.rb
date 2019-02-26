@@ -8,6 +8,7 @@ template '/root/cluster-init.yml' do
   )
 end
 
+
 bash 'master_init' do
   code <<-EOH
     kubeadm init --config=/root/cluster-init.yml --ignore-preflight-errors=all
