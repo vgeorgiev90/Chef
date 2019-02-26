@@ -1,3 +1,14 @@
+apiVersion: kubeadm.k8s.io/v1beta1
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: <%= @token %>
+  ttl: 800h0m0s
+  usages:
+  - signing
+  - authentication
+kind: InitConfiguration
+---
 apiVersion: kubeadm.k8s.io/v1alpha3
 kind: ClusterConfiguration
 kubernetesVersion: stable
@@ -12,11 +23,3 @@ apiServerExtraArgs:
   feature-gates: ExpandInUsePersistentVolumes=true,ExpandPersistentVolumes=true
 networking:
   podSubnet: "<%= @podsubnet %>"
-bootstrapTokens:
-- groups:
-  - system:bootstrappers:kubeadm:default-node-token
-  token: <%= @token %>
-  ttl: 800h0m0s
-  usages:
-  - signing
-  - authentication
