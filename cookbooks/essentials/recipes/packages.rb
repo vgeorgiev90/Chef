@@ -22,16 +22,19 @@ end
 
 cookbook_file "/usr/lib/nagios/plugins/check_linux_stats.pl" do
   source "default/check_linux_stats.pl"
+  mode "0755"
   not_if { ::File.exists?("/usr/lib/nagios/plugins/check_linux_stats.pl") }
 end
 
 cookbook_file "/usr/lib/nagios/plugins/check_mem.pl" do
   source "default/check_mem.pl"
+  mode "0755"
   not_if { ::File.exists?("/usr/lib/nagios/plugins/check_mem.pl") }
 end
 
 cookbook_file "/usr/lib/nagios/plugins/check_diskio.sh" do
   source "default/check_diskio.sh"
+  mode "0755"
   not_if { ::File.exists?("/usr/lib/nagios/plugins/check_diskio.sh") }
 end
 
@@ -43,9 +46,3 @@ service "nagios-nrpe-server" do
   action [:enable, :start]
 end
 
-cron "chef-client-run" do
-  action :create
-  minute '30'
-  user 'root'
-  command "chef-client"
-end
